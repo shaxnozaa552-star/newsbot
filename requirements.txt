@@ -1,3 +1,5 @@
-python-telegram-bot[job-queue]
-python-dotenv
+python-telegram-bot==20.7
+requests
 apscheduler
+python-dotenv
+
