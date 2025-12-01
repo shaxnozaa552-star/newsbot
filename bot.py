@@ -1,3 +1,28 @@
+# ========== ДЛЯ БЕСПЛАТНОГО RENDER 24/7 ==========
+from flask import Flask
+from threading import Thread
+import os
+
+# Создаем веб-сервер для ответа на пинги
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "NewsBot is alive! 🚀"
+
+@app.route('/health')
+def health():
+    return "OK", 200
+
+def run_flask():
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
+
+# Запускаем Flask в отдельном потоке
+flask_thread = Thread(target=run_flask, daemon=True)
+flask_thread.start()
+# ========== КОНЕЦ КОДА ДЛЯ RENDER ==========
+
 import logging
 import asyncio
 import random
@@ -11,7 +36,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # ========== КОНФИГУРАЦИЯ ==========
-TELEGRAM_BOT_TOKEN = "8532133326:AAHXXzVWhx8NAIE_ZCn7x45yO24F_QDMWds"
+# Берем токен из переменных окружения или используем дефолтный
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "8532133326:AAHXXzVWhx8NAIE_ZCn7x45yO24F_QDMWds")
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -293,4 +319,8 @@ def main():
     application.run_polling()
 
 if __name__ == "__main__":
+    # Запускаем Flask (уже запущен в отдельном потоке)
+    logging.info("🌐 Flask сервер запущен на порту 8080")
+    
+    # Запускаем Telegram бота
     main()
